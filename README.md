@@ -1,3 +1,5 @@
+**Modified inference.py : store image to each class folder instead of creating csv**
+
 # PyTorch Image Models, etc
 
 ## Introduction 
