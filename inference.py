@@ -112,12 +112,26 @@ def main():
 
     topk_ids = np.concatenate(topk_ids, axis=0).squeeze()
 
-    with open(os.path.join(args.output_dir, './topk_ids.csv'), 'w') as out_file:
-        filenames = loader.dataset.filenames()
-        for filename, label in zip(filenames, topk_ids):
-            filename = os.path.basename(filename)
-            out_file.write('{0},{1},{2},{3},{4},{5}\n'.format(
-                filename, label[0], label[1], label[2], label[3], label[4]))
+    savebase = "classification_result/"
+    os.makedirs(savebase, exist_ok=True)
+
+    classfile = "labels.txt"
+    classpath = os.path.join(os.getcwd(), classfile)
+    classlist = {}
+    with open(classpath) as f:
+        for idx, line in enumerate(f):
+            val = line.split('\n')[0]
+            classlist[idx] = val
+
+    filenames = loader.dataset.filenames()
+    for filepath, label in zip(filenames, topk_ids):
+        filename = os.path.basename(filepath)
+        prediction = classlist[label[0]]
+        savedir = savebase + prediction
+        savepath = savedir + "/" + filename
+        os.makedirs(savedir, exist_ok=True)
+        copyfile(filepath, savepath)
+        print ('{0} : {1}'.format(filename, prediction))
 
 
 if __name__ == '__main__':
